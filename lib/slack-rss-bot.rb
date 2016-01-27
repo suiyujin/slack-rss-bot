@@ -9,11 +9,11 @@ module SlackRssBot
 
     # TODO: ファイルから読み込むなどする
     # とりあえずはてブホットエントリ
-    url = 'http://feeds.feedburner.com/hatena/b/hotentry'
-    icon_url = 'http://hatenacorp.jp/images/hatenaportal/company/resource/hatena-bookmark-logo-s.png'
+    url = 'http://www.city.tsukuba.ibaraki.jp/news.rss'
+    icon_url = 'http://www.city.tsukuba.ibaraki.jp/dbps_data/_material_/localhost/images/img45c2ddbc8b7bd.gif'
     color = '#008fde'
-    slack.username = feed_name = 'hatebu'
-    slack.icon_emoji = ':ghost:'
+    slack.username = feed_name = 'tsukubashi'
+    slack.icon_emoji = ':classical_building:'
 
     rss = SlackRssBot::RSS.new(feed_name, url)
 
