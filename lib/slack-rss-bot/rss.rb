@@ -1,4 +1,5 @@
 require 'rss'
+require 'redis'
 
 module SlackRssBot
   class RSS
@@ -6,12 +7,26 @@ module SlackRssBot
 
     attr_reader :feed
 
-    def initialize(url)
+    def initialize(feed_name, url)
+      @feed_name = feed_name
       @feed = parse(url)
+
+      @redis = Redis.new
     end
 
     def update?
-      update_time > last_update_time
+      (@feed.items.first.title == last_update_title) || last_update_title.nil?
+    end
+
+    def update_feed_count
+      items = @feed.items
+      update_feed_count = items.index do |item|
+        item.title == last_update_title
+      end
+      @redis.set(@feed_name, @feed.items.first.title)
+
+      return items.size if update_feed_count.nil?
+      update_feed_count
     end
 
     private
@@ -22,14 +37,8 @@ module SlackRssBot
       self.class::Parser.parse(url, false)
     end
 
-    def update_time
-      update_time = @feed.items.first.dc_date
-      update_time.nil? ? @feed.items.first.pubDate : update_time
-    end
-
-    def last_update_time
-      # TODO: 前回の更新時間を返す
-      Time.local(2016,1,20)
+    def last_update_title
+      @redis.get(@feed_name)
     end
   end
 end

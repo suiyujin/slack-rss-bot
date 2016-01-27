@@ -10,27 +10,28 @@ module SlackRssBot
     # TODO: ファイルから読み込むなどする
     # とりあえずはてブホットエントリ
     url = 'http://feeds.feedburner.com/hatena/b/hotentry'
-    rss = SlackRssBot::RSS.new(url)
+    icon_url = 'http://hatenacorp.jp/images/hatenaportal/company/resource/hatena-bookmark-logo-s.png'
+    color = '#008fde'
+    slack.username = feed_name = 'hatebu'
+    slack.icon_emoji = ':ghost:'
+
+    rss = SlackRssBot::RSS.new(feed_name, url)
 
     if rss.update?
-      slack.username = 'hatebu'
-      slack.icon_emoji = ':ghost:'
+      items = rss.feed.items
+      items[0...rss.update_feed_count].each do |item|
+        attachments = [{
+          fallback: "#{item.title} - #{rss.feed.channel.title} #{item.link}",
+          author_name: rss.feed.channel.title,
+          author_icon: icon_url,
+          title: item.title,
+          title_link: item.link,
+          text: item.description,
+          color: color
+        }]
 
-      # TODO: 新しい記事を投稿
-      item = rss.feed.items.first
-      thumb_url = item.content_encoded.match(/img src=\"(http:\/\/cdn-ak.b.st-hatena.com\/entryimage\/\d+-\d+\.\w+)\"/)[1]
-      attachments = [{
-        fallback: "#{item.title} - #{rss.feed.channel.title} #{item.link}",
-        author_name: rss.feed.channel.title,
-        title: item.title,
-        title_link: item.link,
-        text: item.description,
-        color: "#008fde",
-        author_icon: "http://hatenacorp.jp/images/hatenaportal/company/resource/hatena-bookmark-logo-s.png",
-        thumb_url: thumb_url
-      }]
-
-      slack.post("", attachments: attachments)
+        slack.post("", attachments: attachments)
+      end
     end
   end
 end
