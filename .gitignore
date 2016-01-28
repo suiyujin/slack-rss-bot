@@ -36,3 +36,4 @@ build/
 .rvmrc
 
 .env
+config/config.yml

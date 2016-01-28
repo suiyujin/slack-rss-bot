@@ -1,0 +1,11 @@
+feeds:
+  - name: sample
+    url: http://www.sample.com/news.rss
+    color: #000000
+    icon_url: http://www.sample.com/icon.jpg
+    icon_emoji: cat
+  - name: sample2
+    url: http://www.sample2.com/news.rss
+    color: #FF0000
+    icon_url: http://www.sample2.com/icon.jpg
+    icon_emoji: dog
