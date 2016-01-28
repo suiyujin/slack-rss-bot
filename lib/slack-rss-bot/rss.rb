@@ -15,7 +15,7 @@ module SlackRssBot
     end
 
     def update?
-      (@feed.items.first.title == last_update_title) || last_update_title.nil?
+      (@feed.items.first.title != last_update_title) || last_update_title.nil?
     end
 
     def update_feed_count
