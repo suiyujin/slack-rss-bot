@@ -11,7 +11,7 @@ module SlackRssBot
     config = load_config
     config['feeds'].each do |feed|
       slack.username = feed_name = feed['name']
-      slack.icon_emoji = feed['icon_emoji']
+      slack.icon_emoji = ":#{feed['icon_emoji']}:"
       rss = SlackRssBot::RSS.new(feed_name, feed['url'])
 
       if rss.update?
