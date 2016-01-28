@@ -8,7 +8,7 @@ module SlackRssBot
     slack = Slack::Incoming::Webhooks.new(ENV.fetch('SLACK_WEBHOOK_URL'), channel: '#api_test')
 
     # TODO: ファイルから読み込むなどする
-    # とりあえずはてブホットエントリ
+    # とりあえずつくば市のRSS
     url = 'http://www.city.tsukuba.ibaraki.jp/news.rss'
     icon_url = 'http://www.city.tsukuba.ibaraki.jp/dbps_data/_material_/localhost/images/img45c2ddbc8b7bd.gif'
     color = '#008fde'
