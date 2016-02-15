@@ -16,13 +16,13 @@ module SlackRssBot
       slack.icon_emoji = ":#{feed['icon_emoji']}:"
 
       rss = SlackRssBot::RSS.new(feed_name, feed['url'])
-      titles = rss.feed.items.map(&:title)
+      links = rss.feed.items.map(&:link)
 
-      if rss.update?(titles)
-        rss.save_last_titles(titles)
+      if rss.update?(links)
+        rss.save_last_links(links)
 
         new_items = rss.feed.items.select do |item|
-          !rss.before_titles.include?(item.title)
+          !rss.before_links.include?(item.link)
         end
         logger.debug("new_titles: #{new_items.map(&:title)}")
 
