@@ -38,4 +38,5 @@ build/
 .env
 config/config.yml
 images/*
+log/*
 !.keep
