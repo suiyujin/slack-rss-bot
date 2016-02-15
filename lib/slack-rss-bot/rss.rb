@@ -10,7 +10,6 @@ module SlackRssBot
     def initialize(feed_name, url)
       @feed_name = feed_name
       @feed = parse(url)
-
       @redis = Redis.new
     end
 
@@ -21,10 +20,7 @@ module SlackRssBot
 
     def save_last_titles(titles)
       @redis.del(@feed_name)
-
-      titles.each do |title|
-        @redis.sadd(@feed_name, title)
-      end
+      titles.each { |title| @redis.sadd(@feed_name, title) }
     end
 
     private

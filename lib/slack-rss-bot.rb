@@ -12,13 +12,17 @@ module SlackRssBot
     config['feeds'].each do |feed|
       slack.username = feed_name = feed['name']
       slack.icon_emoji = ":#{feed['icon_emoji']}:"
+
       rss = SlackRssBot::RSS.new(feed_name, feed['url'])
       titles = rss.feed.items.map(&:title)
 
       if rss.update?(titles)
         rss.save_last_titles(titles)
 
-        new_items = rss.feed.items.select { |item| !rss.before_titles.include?(item.title) }
+        new_items = rss.feed.items.select do |item|
+          !rss.before_titles.include?(item.title)
+        end
+
         new_items.each do |new_item|
           attachments = [{
             fallback: "#{new_item.title} - #{rss.feed.channel.title} #{new_item.link}",
