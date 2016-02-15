@@ -5,7 +5,7 @@ module SlackRssBot
   class RSS
     include ::RSS
 
-    attr_reader :feed
+    attr_reader :feed, :before_titles
 
     def initialize(feed_name, url)
       @feed_name = feed_name
@@ -14,19 +14,17 @@ module SlackRssBot
       @redis = Redis.new
     end
 
-    def update?
-      (@feed.items.first.title != last_update_title) || last_update_title.nil?
+    def update?(titles)
+      @before_titles = @redis.smembers(@feed_name)
+      (titles - before_titles).size > 0
     end
 
-    def update_feed_count
-      items = @feed.items
-      update_feed_count = items.index do |item|
-        item.title == last_update_title
-      end
-      @redis.set(@feed_name, @feed.items.first.title)
+    def save_last_titles(titles)
+      @redis.del(@feed_name)
 
-      return items.size if update_feed_count.nil?
-      update_feed_count
+      titles.each do |title|
+        @redis.sadd(@feed_name, title)
+      end
     end
 
     private
