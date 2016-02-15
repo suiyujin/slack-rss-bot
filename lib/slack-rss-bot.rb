@@ -1,11 +1,13 @@
 require "#{File.expand_path(File.dirname(__FILE__))}/slack-rss-bot/rss.rb"
 require 'slack/incoming/webhooks'
 require 'yaml'
+require 'logger'
 require 'dotenv'
 Dotenv.load
 
 module SlackRssBot
   def self.run
+    logger = Logger.new("#{File.expand_path(File.dirname(__FILE__)).sub(/lib/, 'log')}/slack-rss-bot.log")
     slack = Slack::Incoming::Webhooks.new(ENV.fetch('SLACK_WEBHOOK_URL'), channel: '#api_test')
 
     config = load_config
@@ -22,6 +24,7 @@ module SlackRssBot
         new_items = rss.feed.items.select do |item|
           !rss.before_titles.include?(item.title)
         end
+        logger.debug("new_titles: #{new_items.map(&:title)}")
 
         new_items.each do |new_item|
           attachments = [{
